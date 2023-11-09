@@ -1,4 +1,4 @@
-name: CI/CD
+name: Deploy API Gateway - Cloud Functions
 
 on:
   push:
@@ -13,15 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Use Node.js
+      - name: Instalar Node.js
         uses: actions/setup-node@v2
         with:
           node-version: "14"
 
-      - name: Install dependencies
+      - name: Instalar dependencias
         run: npm install
 
-      - name: Setup GCP Credentials
+      - name: Configurar GCP Credentials
         env:
           SA_KEY: ${{ secrets.SA_KEY }}
         run: |
@@ -29,9 +29,9 @@ jobs:
           gcloud auth activate-service-account --key-file=gcp-key.json
           gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Enable Cloud Functions API
+      - name: Habilitar Cloud Functions
         run: gcloud services enable cloudfunctions.googleapis.com --project ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Deploy to Google Cloud Platform
+      - name: Deploy
         run: |
           gcloud functions deploy tech-challenge --trigger-http --runtime nodejs14 --entry-point app --allow-unauthenticated
