@@ -1,0 +1,26 @@
+{
+  "name": "techchallenge-api-gateway",
+  "version": "1.0.0",
+  "description": "API Gateway for TechChallenge using Google Cloud Functions, PostgreSQL, and Google Identity Platform.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "gcloud functions deploy authenticateCPF --trigger-http --runtime nodejs14 --allow-unauthenticated --set-env-vars DATABASE_URL=your_database_url,JWT_SECRET=your_jwt_secret"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "bcrypt": "^5.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "firebase-admin": "^10.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "@google-cloud/functions-framework": "^1.7.1"
+  },
+  "engines": {
+    "node": "14.x"
+  }
+}
