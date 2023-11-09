@@ -25,12 +25,11 @@ jobs:
         run: |
           echo "${{ secrets.SA_KEY }}" | base64 --decode > gcp-key.json
           gcloud auth activate-service-account --key-file=gcp-key.json
-          gcloud config set project your-gcp-project-id  # Substitua pelo seu Project ID
+          gcloud config set project ${{ env.GCP_PROJECT_ID }}  # Substitua pelo seu Project ID
 
       - name: Deploy to Google Cloud Functions
         run: |
-          gcloud functions deploy your-function-name --trigger-http --runtime nodejs14 --entry-point yourEntryPoint  # Substitua com os detalhes da sua função
-
+          gcloud functions deploy tech-challenge --trigger-http --runtime nodejs14 --entry-point yourEntryPoint
       - name: Retrieve function URL
         run: |
           FUNCTION_URL=$(gcloud functions describe your-function-name --format 'value(httpsTrigger.url)')
