@@ -1,32 +1,40 @@
-name: Deploy - Google Cloud Functions
+name: CI/CD
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  setup_deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "14"
 
+      # Setup Node.js environment
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14" # Specify your Node.js version here
+
+      # Install dependencies
       - name: Install dependencies
         run: npm install
 
-      - name: Deploy to Google Cloud Functions
+      # Authenticate with GCP
+      - name: Setup GCP Credentials
         env:
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
         run: |
           echo "$GCP_SA_KEY" | base64 --decode > gcp-key.json
           gcloud auth activate-service-account --key-file=gcp-key.json
-          gcloud config set project $GCP_PROJECT_ID
-          gcloud functions deploy YOUR_FUNCTION_NAME --entry-point YOUR_FUNCTION_ENTRYPOINT --runtime nodejs14 --trigger-http --allow-unauthenticated
-        if: github.ref == 'refs/heads/main'
+          gcloud config set project your-gcp-project-id
+
+      # Deploy to GCP
+      - name: Deploy to Google Cloud Platform
+        run: |
+          # Your deployment commands go here
+          # For example, deploying to Cloud Functions:
+          # gcloud functions deploy your-function-name --trigger-http --runtime nodejs14 --entry-point yourEntryPoint
