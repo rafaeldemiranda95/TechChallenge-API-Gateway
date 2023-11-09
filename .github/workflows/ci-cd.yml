@@ -22,25 +22,20 @@ jobs:
         run: npm install
 
       - name: Setup GCP Credentials
-        env:
-          SA_KEY: ${{ secrets.GCP_SA_KEY }} # Certifique-se de que o nome da secret está correto
         run: |
-          echo "$SA_KEY" | base64 --decode > gcp-key.json
+          echo "${{ secrets.SA_KEY }}" | base64 --decode > gcp-key.json
           gcloud auth activate-service-account --key-file=gcp-key.json
           gcloud config set project your-gcp-project-id  # Substitua pelo seu Project ID
 
-      # Deploy to Google Cloud Functions
       - name: Deploy to Google Cloud Functions
         run: |
           gcloud functions deploy your-function-name --trigger-http --runtime nodejs14 --entry-point yourEntryPoint  # Substitua com os detalhes da sua função
 
-      # Get the function URL after deployment
       - name: Retrieve function URL
         run: |
           FUNCTION_URL=$(gcloud functions describe your-function-name --format 'value(httpsTrigger.url)')
           echo "Function URL: $FUNCTION_URL"
           echo "FUNCTION_URL=$FUNCTION_URL" >> $GITHUB_ENV
 
-      # Optional: Step to output the URL to the workflow if needed
       - name: Output function URL
         run: echo "Deployed to ${{ env.FUNCTION_URL }}"
