@@ -13,22 +13,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Setup Node.js environment
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "14" # Specify your Node.js version here
+          node-version: "14"
 
-      # Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # Authenticate with GCP
       - name: Setup GCP Credentials
         env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          SA_KEY: ${{ secrets.SA_KEY }}
         run: |
-          echo "$GCP_SA_KEY" | base64 --decode > gcp-key.json
+          echo "$SA_KEY" | base64 --decode > gcp-key.json
           gcloud auth activate-service-account --key-file=gcp-key.json
           gcloud config set project your-gcp-project-id
 
