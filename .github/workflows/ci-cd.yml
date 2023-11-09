@@ -27,11 +27,11 @@ jobs:
         run: |
           echo "$SA_KEY" | base64 --decode > gcp-key.json
           gcloud auth activate-service-account --key-file=gcp-key.json
-          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}  # Substitua pelo ID real do seu projeto GCP
+          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
 
-      # Aqui vamos supor que você está implantando uma função HTTP Cloud Function.
+      - name: Enable Cloud Functions API
+        run: gcloud services enable cloudfunctions.googleapis.com --project ${{ secrets.GCP_PROJECT_ID }}
+
       - name: Deploy to Google Cloud Platform
         run: |
-          gcloud functions deploy tech-challenge --trigger-http --runtime nodejs14 --entry-point yourEntryPoint --allow-unauthenticated
-          # Substitua 'your-function-name' pelo nome da sua função Cloud Function.
-          # Substitua 'yourEntryPoint' pelo nome do entry point da sua função, por exemplo, o nome da função exportada no seu arquivo index.js.
+          gcloud functions deploy tech-challenge --trigger-http --runtime nodejs14 --entry-point app --allow-unauthenticated
