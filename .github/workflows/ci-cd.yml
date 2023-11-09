@@ -22,19 +22,16 @@ jobs:
         run: npm install
 
       - name: Setup GCP Credentials
+        env:
+          SA_KEY: ${{ secrets.SA_KEY }}
         run: |
-          echo "${{ secrets.SA_KEY }}" | base64 --decode > gcp-key.json
+          echo "$SA_KEY" | base64 --decode > gcp-key.json
           gcloud auth activate-service-account --key-file=gcp-key.json
-          gcloud config set project ${{ env.GCP_PROJECT_ID }}  # Substitua pelo seu Project ID
+          gcloud config set project your-gcp-project-id  # Substitua pelo ID real do seu projeto GCP
 
-      - name: Deploy to Google Cloud Functions
+      # Aqui vamos supor que você está implantando uma função HTTP Cloud Function.
+      - name: Deploy to Google Cloud Platform
         run: |
-          gcloud functions deploy tech-challenge --trigger-http --runtime nodejs14 --entry-point yourEntryPoint
-      - name: Retrieve function URL
-        run: |
-          FUNCTION_URL=$(gcloud functions describe your-function-name --format 'value(httpsTrigger.url)')
-          echo "Function URL: $FUNCTION_URL"
-          echo "FUNCTION_URL=$FUNCTION_URL" >> $GITHUB_ENV
-
-      - name: Output function URL
-        run: echo "Deployed to ${{ env.FUNCTION_URL }}"
+          gcloud functions deploy your-function-name --trigger-http --runtime nodejs14 --entry-point yourEntryPoint --allow-unauthenticated
+          # Substitua 'your-function-name' pelo nome da sua função Cloud Function.
+          # Substitua 'yourEntryPoint' pelo nome do entry point da sua função, por exemplo, o nome da função exportada no seu arquivo index.js.
